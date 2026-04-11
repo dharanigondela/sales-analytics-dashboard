@@ -1,0 +1,161 @@
+{
+  "kpis": {
+    "total_revenue": 8911407.9,
+    "total_orders": 18536,
+    "avg_order_value": 480.76,
+    "peak_month": "2011-11",
+    "total_countries": 37,
+    "total_products": 3877
+  },
+  "monthly": [
+    {
+      "YearMonth": "2010-12",
+      "Revenue": 572713.89,
+      "Orders": 1400
+    },
+    {
+      "YearMonth": "2011-01",
+      "Revenue": 569445.04,
+      "Orders": 987
+    },
+    {
+      "YearMonth": "2011-02",
+      "Revenue": 447137.35,
+      "Orders": 998
+    },
+    {
+      "YearMonth": "2011-03",
+      "Revenue": 595500.76,
+      "Orders": 1321
+    },
+    {
+      "YearMonth": "2011-04",
+      "Revenue": 469200.361,
+      "Orders": 1149
+    },
+    {
+      "YearMonth": "2011-05",
+      "Revenue": 678594.56,
+      "Orders": 1555
+    },
+    {
+      "YearMonth": "2011-06",
+      "Revenue": 661213.6900000001,
+      "Orders": 1393
+    },
+    {
+      "YearMonth": "2011-07",
+      "Revenue": 600091.011,
+      "Orders": 1331
+    },
+    {
+      "YearMonth": "2011-08",
+      "Revenue": 645343.9,
+      "Orders": 1281
+    },
+    {
+      "YearMonth": "2011-09",
+      "Revenue": 952838.382,
+      "Orders": 1756
+    },
+    {
+      "YearMonth": "2011-10",
+      "Revenue": 1039318.79,
+      "Orders": 1929
+    },
+    {
+      "YearMonth": "2011-11",
+      "Revenue": 1161817.3800000001,
+      "Orders": 2658
+    },
+    {
+      "YearMonth": "2011-12",
+      "Revenue": 518192.79,
+      "Orders": 778
+    }
+  ],
+  "top_products": [
+    {
+      "Description": "PAPER CRAFT , LITTLE BIRDIE",
+      "Revenue": 168469.6
+    },
+    {
+      "Description": "REGENCY CAKESTAND 3 TIER",
+      "Revenue": 142592.95
+    },
+    {
+      "Description": "WHITE HANGING HEART T-LIGHT HOLDER",
+      "Revenue": 100448.15
+    },
+    {
+      "Description": "JUMBO BAG RED RETROSPOT",
+      "Revenue": 85220.78
+    },
+    {
+      "Description": "MEDIUM CERAMIC TOP STORAGE JAR",
+      "Revenue": 81416.73
+    },
+    {
+      "Description": "POSTAGE",
+      "Revenue": 77803.96
+    },
+    {
+      "Description": "PARTY BUNTING",
+      "Revenue": 68844.33
+    },
+    {
+      "Description": "ASSORTED COLOUR BIRD ORNAMENT",
+      "Revenue": 56580.34
+    },
+    {
+      "Description": "Manual",
+      "Revenue": 53779.93
+    },
+    {
+      "Description": "RABBIT NIGHT LIGHT",
+      "Revenue": 51346.2
+    }
+  ],
+  "top_countries": [
+    {
+      "Country": "United Kingdom",
+      "Revenue": 7308391.55
+    },
+    {
+      "Country": "Netherlands",
+      "Revenue": 285446.34
+    },
+    {
+      "Country": "EIRE",
+      "Revenue": 265545.9
+    },
+    {
+      "Country": "Germany",
+      "Revenue": 228867.14
+    },
+    {
+      "Country": "France",
+      "Revenue": 209024.05
+    },
+    {
+      "Country": "Australia",
+      "Revenue": 138521.31
+    },
+    {
+      "Country": "Spain",
+      "Revenue": 61577.11
+    },
+    {
+      "Country": "Switzerland",
+      "Revenue": 56443.95
+    },
+    {
+      "Country": "Belgium",
+      "Revenue": 41196.34
+    },
+    {
+      "Country": "Sweden",
+      "Revenue": 38378.33
+    }
+  ]
+}
