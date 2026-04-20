@@ -1,0 +1,437 @@
+
+<h2 class="sr-only">Bank direct marketing funnel analysis dashboard showing conversion rates across channels, months, and job segments</h2>
+
+<style>
+  :root {
+    --ink: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --faint: var(--color-text-tertiary);
+    --surface: var(--color-background-secondary);
+    --card: var(--color-background-primary);
+    --bd: var(--color-border-tertiary);
+    --bd2: var(--color-border-secondary);
+    --accent: #1a6ef5;
+    --accent2: #0d9e6e;
+    --warn: #e05c2a;
+    --gap: 12px;
+    --r: var(--border-radius-lg);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); color: var(--ink); }
+  .dash { display: flex; flex-direction: column; gap: 20px; padding: 4px 0 16px; }
+
+  .top-bar { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .top-bar h1 { font-size: 20px; font-weight: 500; }
+  .top-bar p { font-size: 13px; color: var(--muted); }
+
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap); }
+  .kpi { background: var(--surface); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .kpi-label { font-size: 11px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .kpi-val { font-size: 26px; font-weight: 500; line-height: 1; }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi.hi .kpi-val { color: var(--accent2); }
+  .kpi.lo .kpi-val { color: var(--warn); }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
+  .panel { background: var(--card); border: 0.5px solid var(--bd); border-radius: var(--r); padding: 18px 20px; }
+  .panel-title { font-size: 13px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 14px; }
+
+  .funnel-wrap { display: flex; flex-direction: column; gap: 5px; }
+  .fstage { display: flex; align-items: center; gap: 10px; }
+  .fbar-track { flex: 1; background: var(--surface); border-radius: 4px; height: 32px; overflow: hidden; position: relative; }
+  .fbar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 500; white-space: nowrap; transition: width .6s ease; }
+  .fbar-fill span { color: #fff; }
+  .flabel { font-size: 11px; color: var(--muted); width: 72px; text-align: right; flex-shrink: 0; }
+  .fcount { font-size: 11px; color: var(--faint); width: 52px; text-align: right; flex-shrink: 0; }
+  .fdrop { font-size: 10px; color: var(--warn); margin-left: 2px; }
+
+  .seg-grid { display: flex; flex-direction: column; gap: 6px; }
+  .seg-row { display: flex; align-items: center; gap: 8px; }
+  .seg-name { font-size: 12px; width: 88px; flex-shrink: 0; color: var(--ink); }
+  .seg-track { flex: 1; background: var(--surface); border-radius: 3px; height: 18px; overflow: hidden; }
+  .seg-fill { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 6px; }
+  .seg-fill span { font-size: 10px; color: #fff; font-weight: 500; }
+  .seg-pct { font-size: 11px; color: var(--muted); width: 38px; text-align: right; flex-shrink: 0; }
+
+  .chart-tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--bd); margin-bottom: 14px; }
+  .ctab { font-size: 12px; font-weight: 500; color: var(--muted); padding: 6px 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; border-top: none; border-left: none; border-right: none; }
+  .ctab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .ctab:hover:not(.active) { color: var(--ink); }
+
+  .insight-box { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 12px 14px; }
+  .insight-title { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+  .insight-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+  .insight-bullet { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+  .insight-text { font-size: 12px; line-height: 1.5; color: var(--ink); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .leg-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  .row3 { display: grid; grid-template-columns: 1fr 1.2fr; gap: var(--gap); }
+
+  .matrix { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
+  .mcard { background: var(--surface); border-radius: var(--border-radius-md); padding: 10px 12px; border: 0.5px solid var(--bd); }
+  .mcard-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+  .mcard-val { font-size: 17px; font-weight: 500; }
+  .mcard-sub { font-size: 10px; color: var(--faint); margin-top: 2px; }
+  .mcard.best { border-color: var(--accent2); }
+  .mcard.best .mcard-val { color: var(--accent2); }
+  .mcard.worst { border-color: var(--warn); }
+  .mcard.worst .mcard-val { color: var(--warn); }
+</style>
+
+<div class="dash">
+
+  <div class="top-bar">
+    <h1>Lead funnel analysis</h1>
+    <p>Portuguese bank · 45,211 contacts · May 2008 – Nov 2010</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-label">Total leads</div>
+      <div class="kpi-val">45,211</div>
+      <div class="kpi-sub">Across 3 channels</div>
+    </div>
+    <div class="kpi hi">
+      <div class="kpi-label">Converted</div>
+      <div class="kpi-val">5,289</div>
+      <div class="kpi-sub">11.7% overall rate</div>
+    </div>
+    <div class="kpi lo">
+      <div class="kpi-label">Lost leads</div>
+      <div class="kpi-val">39,922</div>
+      <div class="kpi-sub">88.3% did not convert</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg call duration</div>
+      <div class="kpi-val">257s</div>
+      <div class="kpi-sub">4.3 min per contact</div>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="panel">
+      <div class="panel-title">Conversion funnel</div>
+      <div class="funnel-wrap">
+        <div class="fstage">
+          <div class="flabel">Contacts</div>
+          <div class="fbar-track">
+            <div class="fbar-fill" style="width:100%;background:#1a6ef5"><span>45,211 · 100%</span></div>
+          </div>
+          <div class="fcount"></div>
+        </div>
+        <div class="fstage">
+          <div class="flabel">Answered</div>
+          <div class="fbar-track">
+            <div class="fbar-fill" style="width:98.2%;background:#2278f5"><span>44,386 · 98.2%</span></div>
+          </div>
+          <div class="fcount fdrop">↓ 1.8%</div>
+        </div>
+        <div class="fstage">
+          <div class="flabel">Engaged</div>
+          <div class="fbar-track">
+            <div class="fbar-fill" style="width:95.6%;background:#3d8af5"><span>43,201 · 95.6%</span></div>
+          </div>
+          <div class="fcount fdrop">↓ 2.7%</div>
+        </div>
+        <div class="fstage">
+          <div class="flabel">Multi-touch</div>
+          <div class="fbar-track">
+            <div class="fbar-fill" style="width:61.2%;background:#f5a623"><span>27,667 · 61.2%</span></div>
+          </div>
+          <div class="fcount fdrop">↓ 34%</div>
+        </div>
+        <div class="fstage">
+          <div class="flabel">Converted</div>
+          <div class="fbar-track">
+            <div class="fbar-fill" style="width:11.7%;background:#0d9e6e"><span>5,289 · 11.7%</span></div>
+          </div>
+          <div class="fcount fdrop">↓ 49.5%</div>
+        </div>
+      </div>
+      <div style="margin-top:14px; padding-top:12px; border-top:0.5px solid var(--bd);">
+        <div class="insight-title" style="margin-bottom:6px;">Biggest drop-off</div>
+        <div style="font-size:12px; color:var(--ink); line-height:1.6;">Multi-touch → Conversion loses <strong style="color:var(--warn)">22,378 leads</strong> (49.5% drop). This is the critical optimization point.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Conversion rate by job segment</div>
+      <div class="seg-grid">
+        <div class="seg-row">
+          <div class="seg-name">Student</div>
+          <div class="seg-track"><div class="seg-fill" style="width:78%;background:#0d9e6e"><span>28.7%</span></div></div>
+          <div class="seg-pct" style="color:#0d9e6e">28.7%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Retired</div>
+          <div class="seg-track"><div class="seg-fill" style="width:62%;background:#0d9e6e"><span>22.8%</span></div></div>
+          <div class="seg-pct" style="color:#0d9e6e">22.8%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Unemployed</div>
+          <div class="seg-track"><div class="seg-fill" style="width:42%;background:#1a6ef5"><span>15.5%</span></div></div>
+          <div class="seg-pct">15.5%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Management</div>
+          <div class="seg-track"><div class="seg-fill" style="width:38%;background:#1a6ef5"><span>13.8%</span></div></div>
+          <div class="seg-pct">13.8%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Admin.</div>
+          <div class="seg-track"><div class="seg-fill" style="width:33%;background:#6b9ff5"><span></span></div></div>
+          <div class="seg-pct">12.2%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Technician</div>
+          <div class="seg-track"><div class="seg-fill" style="width:30%;background:#6b9ff5"><span></span></div></div>
+          <div class="seg-pct">11.1%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Services</div>
+          <div class="seg-track"><div class="seg-fill" style="width:24%;background:#c9a838"><span></span></div></div>
+          <div class="seg-pct" style="color:var(--warn)">8.9%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Housemaid</div>
+          <div class="seg-track"><div class="seg-fill" style="width:24%;background:#c9a838"><span></span></div></div>
+          <div class="seg-pct" style="color:var(--warn)">8.8%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Entrepreneur</div>
+          <div class="seg-track"><div class="seg-fill" style="width:22%;background:#e05c2a"><span></span></div></div>
+          <div class="seg-pct" style="color:var(--warn)">8.3%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name">Blue-collar</div>
+          <div class="seg-track"><div class="seg-fill" style="width:20%;background:#e05c2a"><span></span></div></div>
+          <div class="seg-pct" style="color:var(--warn)">7.3%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" style="background:var(--card);border:0.5px solid var(--bd);border-radius:var(--r);">
+    <div class="chart-tabs">
+      <button class="ctab active" onclick="showChart('monthly')">Monthly conversion</button>
+      <button class="ctab" onclick="showChart('channel')">Channel split</button>
+      <button class="ctab" onclick="showChart('contacts')">Contacts vs. conversion</button>
+    </div>
+    <div class="legend" id="chart-legend"></div>
+    <div style="position:relative;width:100%;height:220px;">
+      <canvas id="mainChart" role="img" aria-label="Conversion rate chart switching between monthly, channel, and contacts views"></canvas>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="panel">
+      <div class="panel-title">Previous campaign impact</div>
+      <div class="seg-grid">
+        <div class="seg-row">
+          <div class="seg-name" style="width:80px">Success</div>
+          <div class="seg-track"><div class="seg-fill" style="width:100%;background:#0d9e6e"><span>64.7%</span></div></div>
+          <div class="seg-pct" style="color:#0d9e6e">64.7%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name" style="width:80px">Other</div>
+          <div class="seg-track"><div class="seg-fill" style="width:26%;background:#1a6ef5"><span></span></div></div>
+          <div class="seg-pct">16.7%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name" style="width:80px">Failure</div>
+          <div class="seg-track"><div class="seg-fill" style="width:19%;background:#6b9ff5"><span></span></div></div>
+          <div class="seg-pct">12.6%</div>
+        </div>
+        <div class="seg-row">
+          <div class="seg-name" style="width:80px">Unknown</div>
+          <div class="seg-track"><div class="seg-fill" style="width:14%;background:#e05c2a"><span></span></div></div>
+          <div class="seg-pct" style="color:var(--warn)">9.2%</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding-top:10px;border-top:0.5px solid var(--bd);font-size:12px;color:var(--ink);line-height:1.6;">
+        Prior success leads convert <strong style="color:#0d9e6e">7× higher</strong> than unknown contacts. Re-targeting is the highest-ROI action.
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Opportunity matrix</div>
+      <div class="matrix">
+        <div class="mcard best">
+          <div class="mcard-label">Best month</div>
+          <div class="mcard-val">March</div>
+          <div class="mcard-sub">52.0% conv. rate</div>
+        </div>
+        <div class="mcard best">
+          <div class="mcard-label">Best channel</div>
+          <div class="mcard-val">Cellular</div>
+          <div class="mcard-sub">14.9% conv. rate</div>
+        </div>
+        <div class="mcard worst">
+          <div class="mcard-label">Worst month</div>
+          <div class="mcard-val">May</div>
+          <div class="mcard-sub">6.7% but 30% vol.</div>
+        </div>
+        <div class="mcard worst">
+          <div class="mcard-label">Worst channel</div>
+          <div class="mcard-val">Unknown</div>
+          <div class="mcard-sub">4.1% conv. rate</div>
+        </div>
+        <div class="mcard best">
+          <div class="mcard-label">Best segment</div>
+          <div class="mcard-val">Student</div>
+          <div class="mcard-sub">28.7% conv. rate</div>
+        </div>
+        <div class="mcard best">
+          <div class="mcard-label">Re-target wins</div>
+          <div class="mcard-val">64.7%</div>
+          <div class="mcard-sub">Prior success leads</div>
+        </div>
+        <div class="mcard worst">
+          <div class="mcard-label">Call #4 drop</div>
+          <div class="mcard-val">9.0%</div>
+          <div class="mcard-sub">vs 14.6% at call #1</div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-label">Revenue signal</div>
+          <div class="mcard-val">Stop at 3</div>
+          <div class="mcard-sub">ROI falls after 3 calls</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box">
+    <div class="insight-title">Top recommendations</div>
+    <div class="insight-item">
+      <div class="insight-bullet" style="background:#0d9e6e"></div>
+      <div class="insight-text"><strong>Re-target prior successes first</strong> — 978 of 1,511 converted (64.7%). This is a ready-made warm list.</div>
+    </div>
+    <div class="insight-item">
+      <div class="insight-bullet" style="background:#1a6ef5"></div>
+      <div class="insight-text"><strong>Shift budget from May to Mar/Sep/Oct/Dec</strong> — May burns 30% of contacts for only 6.7% conversion. Peak months hit 43–52%.</div>
+    </div>
+    <div class="insight-item">
+      <div class="insight-bullet" style="background:#1a6ef5"></div>
+      <div class="insight-text"><strong>Classify unknown contacts</strong> — 13,020 leads languishing at 4.1% conversion. Cellular delivers 14.9%.</div>
+    </div>
+    <div class="insight-item">
+      <div class="insight-bullet" style="background:#f5a623"></div>
+      <div class="insight-text"><strong>Cap outreach at 3 calls</strong> — conversion rate falls from 14.6% (call 1) to 9.0% (call 4) and keeps declining. After 3 contacts, cut losses.</div>
+    </div>
+    <div class="insight-item">
+      <div class="insight-bullet" style="background:#e05c2a"></div>
+      <div class="insight-text"><strong>Prioritize students &amp; retirees</strong> — 28.7% and 22.8% conversion vs 7.3% blue-collar. Segment your dialing lists.</div>
+    </div>
+    <button style="margin-top:8px;font-size:12px;" onclick="sendPrompt('Based on the funnel analysis, build me a lead scoring model that prioritizes the highest-conversion segments')">Build a lead scoring model ↗</button>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+let chartInstance = null;
+const BLUE = '#1a6ef5', GREEN = '#0d9e6e', ORANGE = '#f5a623', RED = '#e05c2a', GRAY = '#888';
+
+const datasets = {
+  monthly: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    data: [10.1,16.6,52.0,19.7,6.7,10.2,9.1,11.0,46.5,43.8,10.2,46.7],
+    colors: [BLUE,BLUE,GREEN,GREEN,RED,BLUE,BLUE,BLUE,GREEN,GREEN,BLUE,GREEN],
+    type: 'bar',
+    label: 'Conv. rate %',
+    legend: [{color:GREEN,label:'Peak months (>30%)'},{color:BLUE,label:'Average'},{color:RED,label:'Low performers'}]
+  },
+  channel: {
+    labels: ['Cellular','Telephone','Unknown'],
+    data: [14.9,13.4,4.1],
+    colors: [GREEN,BLUE,RED],
+    type: 'bar',
+    label: 'Conv. rate %',
+    legend: [{color:GREEN,label:'Best'},{color:BLUE,label:'Average'},{color:RED,label:'Needs fix'}]
+  },
+  contacts: {
+    labels: ['1 call','2 calls','3 calls','4 calls','5 calls','6 calls','7 calls','8+ calls'],
+    data: [14.6,11.2,11.2,9.0,7.9,7.1,6.4,5.7],
+    colors: [GREEN,BLUE,BLUE,ORANGE,ORANGE,RED,RED,RED],
+    type: 'line',
+    label: 'Conv. rate %',
+    legend: [{color:GREEN,label:'Good ROI'},{color:ORANGE,label:'Diminishing'},{color:RED,label:'Negative ROI'}]
+  }
+};
+
+function renderLegend(key) {
+  const lg = document.getElementById('chart-legend');
+  lg.innerHTML = datasets[key].legend.map(l =>
+    `<span class="leg-item"><span class="leg-swatch" style="background:${l.color}"></span>${l.label}</span>`
+  ).join('');
+}
+
+function showChart(key) {
+  document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  if (chartInstance) chartInstance.destroy();
+  const d = datasets[key];
+  renderLegend(key);
+  const ctx = document.getElementById('mainChart').getContext('2d');
+  chartInstance = new Chart(ctx, {
+    type: d.type,
+    data: {
+      labels: d.labels,
+      datasets: [{
+        label: d.label,
+        data: d.data,
+        backgroundColor: d.type === 'bar' ? d.colors : 'transparent',
+        borderColor: d.type === 'line' ? BLUE : d.colors,
+        borderWidth: d.type === 'line' ? 2 : 0,
+        pointBackgroundColor: d.type === 'line' ? d.colors : undefined,
+        pointRadius: d.type === 'line' ? 5 : undefined,
+        borderRadius: d.type === 'bar' ? 4 : undefined,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}%` }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { callback: v => v + '%', font: { size: 11 }, color: GRAY },
+          grid: { color: 'rgba(128,128,128,0.1)' },
+          border: { display: false }
+        },
+        x: {
+          ticks: { font: { size: 11 }, color: GRAY, autoSkip: false, maxRotation: 0 },
+          grid: { display: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+renderLegend('monthly');
+const ctx = document.getElementById('mainChart').getContext('2d');
+const d = datasets.monthly;
+chartInstance = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: d.labels,
+    datasets: [{ label: d.label, data: d.data, backgroundColor: d.colors, borderRadius: 4, borderWidth: 0 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y.toFixed(1)}%` } } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => v+'%', font:{size:11}, color:GRAY }, grid:{color:'rgba(128,128,128,0.1)'}, border:{display:false} },
+      x: { ticks: { font:{size:11}, color:GRAY, autoSkip:false, maxRotation:0 }, grid:{display:false}, border:{display:false} }
+    }
+  }
+});
+</script>
